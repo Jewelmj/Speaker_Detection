@@ -24,6 +24,10 @@ Speaker_Detection/
 
 ## Setup
 ### code:
+cone github:
+```bash
+git clone https://github.com/Jewelmj/Speaker_Detection
+```
 create env using python 3.12:
 ```bash
 conda create -n speaker_recognition python=3.12
@@ -47,10 +51,16 @@ data/
 ```
 
 ## Usage
-Run the entire pipeline:
+Train the selected model:
 ```bash
-python src/main.py
+python src/main.py train
 ```
+> **note**: update settings.py with the rigth train model name.
+Run inference on a new audio file:
+```bash
+python src/main.py infer audio_file_path
+```
+> **note**: update settings.py with the rigth infrence model name.
 Clean all auto-generated files:
 ```bash
 python src/main.py clean

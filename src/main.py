@@ -4,6 +4,8 @@ import shutil
 
 from data.mertadata_prep import prepare_metadata
 from features.audio_feature_extractor import batch_extract_features
+from models.trainer import train_selected_model
+from models.infer import run_inference
 
 from config.settings import METADATA_FILE, PROCESSED_DIR, MODEL_DIR
 
@@ -43,7 +45,7 @@ def clean_all():
 
     print("Clean completed.")
 
-def run_all():
+def load_data():
     print("Running Speaker Recognition Pipeline...\n")
 
     if not metadata_exists():
@@ -61,11 +63,30 @@ def run_all():
     print("\nPipeline completed successfully!")
 
 def main():
-    if len(sys.argv) > 1 and sys.argv[1] == "clean":
-        clean_all()
+    load_data()
+
+    if len(sys.argv) == 1:
+        print("\nNo command provided!")
+        print("Use one of the following commands:")
+        print("  python src/main.py clean")
+        print("  python src/main.py train")
+        print("  python src/main.py infer path/to/audio.wav")
         return
+    elif sys.argv[1] == "clean":
+        clean_all()
+    elif sys.argv[1] == "train":
+        print("\nTraining model...")
+        train_selected_model()
 
-    run_all()
+    elif sys.argv[1] == "infer":
+        if len(sys.argv) < 3:
+            print("Missing audio file.\nUsage:")
+            print("python src/main.py infer path/to/audio.wav")
 
+        audio_path = sys.argv[2]
+
+        print(f"\nRunning inference on: {audio_path}")
+        run_inference(audio_path)
+    
 if __name__ == "__main__":
     main()
