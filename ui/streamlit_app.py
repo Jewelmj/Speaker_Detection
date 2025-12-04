@@ -21,7 +21,7 @@ st.sidebar.header("Navigation")
 
 mode = st.sidebar.radio(
     "Choose Mode:",
-    ["Train Model", "Inference", "Model Comparison"]
+    ["Train Model", "Inference", "Model Comparison", "Training History"]
 )
 
 feature_options = ["mfcc", "delta", "deltadelta", "spectral", "melspec"]
@@ -158,3 +158,38 @@ elif mode == "Inference":
             st.error(f"Inference Error: {e}")
 
         os.remove(temp_path)
+
+elif mode == "Training History":
+    st.header("Training History")
+
+    log_path = "experiments/logs/train_history.jsonl"
+
+    if not os.path.exists(log_path):
+        st.info("No training history found.")
+    else:
+        import json
+        import pandas as pd
+
+        rows = []
+        with open(log_path, "r") as f:
+            for line in f:
+                rows.append(json.loads(line))
+
+        df = pd.DataFrame(rows)
+
+        st.subheader("Training Table")
+        st.dataframe(df)
+
+        st.subheader("Accuracy Over Time")
+        if "accuracy" in df.columns:
+            chart_df = df[["timestamp", "accuracy"]].set_index("timestamp")
+            st.line_chart(chart_df)
+
+        best_idx = df["accuracy"].idxmax()
+        best_row = df.loc[best_idx]
+
+        st.subheader("Best Model")
+        st.write(f"**Model:** {best_row['model']}")
+        st.write(f"**Features:** {best_row['features']}")
+        st.write(f"**Accuracy:** {best_row['accuracy']:.3f}")
+        st.write(f"**Timestamp:** {best_row['timestamp']}")

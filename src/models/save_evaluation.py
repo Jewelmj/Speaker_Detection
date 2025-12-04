@@ -83,3 +83,5 @@ def save_evaluation_json(model, X_test_scaled, y_test, y_pred, model_name):
 
     with open(json_path, "w") as jf:
         json.dump(results, jf, indent=4)
+
+    return results

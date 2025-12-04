@@ -5,7 +5,7 @@ import joblib
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-from src.config.settings import MODEL_TO_USE, PROCESSED_DIR, MODEL_DIR
+from src.config.settings import MODEL_TO_USE, PROCESSED_DIR, MODEL_DIR, FEATURE_TYPES
 
 from src.models.svm_model import get_svm_model
 from src.models.logistic_model import get_logistic_model
@@ -16,6 +16,7 @@ from src.models.save_evaluation import (
     save_roc_curve,
     save_evaluation_json
 )
+from src.models.train_logger import log_training_run
 
 def load_data():
     X_train = np.load(os.path.join(PROCESSED_DIR, "X_train.npy"))
@@ -59,7 +60,17 @@ def train_selected_model(model_name=MODEL_TO_USE):
     save_confusion_matrix(y_test, y_pred, model_name)
     save_classification_report(y_test, y_pred, model_name)
     save_roc_curve(model, X_test_scaled, y_test, model_name)
-    save_evaluation_json(model, X_test_scaled, y_test, y_pred, model_name)
+
+    metrics = save_evaluation_json(
+        model, X_test_scaled, y_test, y_pred, model_name
+    )
+
+    log_training_run(
+        model_name=model_name,
+        features=FEATURE_TYPES,
+        metrics=metrics,
+        extra_info={"train_size": len(y_train), "test_size": len(y_test)}
+    )
 
     print(f"\nEvaluation saved under: experiments/evaluation/")
 
