@@ -1,16 +1,20 @@
-data/target/
-data/other/
-data/metadata/
-data/processed/
+data/target/*
+data/other/*
+data/metadata/*
+data/processed/*
 
-experiments/models/
-experiments/logs/
+experiments/models/*
+experiments/logs/*
 
 !data/.gitkeep
 !data/target/.gitkeep
 !data/other/.gitkeep
 !data/metadata/.gitkeep
 !data/processed/.gitkeep
+
+!experiments/.gitkeep
+!experiments/models/.gitkeep
+!experiments/log/.gitkeep
 
 __pycache__/
 *.pyc

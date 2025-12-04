@@ -2,6 +2,7 @@
 This project implements a binary speaker recognition system using MFCC features and a classical machine-learning pipeline.
 
 ## Project Structure
+```bash
 Speaker_Detection/
 │
 ├── src/
@@ -19,6 +20,7 @@ Speaker_Detection/
 └── experiments/
     ├── models/
     └── logs/
+```
 
 ## Setup
 ### code:
@@ -70,8 +72,8 @@ y_test.npy
 ```
 
 ## Credits
-Developed by : Jewel.M.Jain
-Data collected by: Vaibhav
-Market Research by: Nikolas
-Course: Signal and Speech Processing
-Semester: 4th Year – Academia
+Developed by : Jewel.M.Jain  
+Data collected by: Vaibhav  
+Market Research by: Nikolas  
+Course: Signal and Speech Processing  
+Semester: 4th Year – Academia  
