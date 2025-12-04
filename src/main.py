@@ -10,7 +10,7 @@ from src.features.audio_feature_extractor import batch_extract_features
 from src.models.trainer import train_selected_model
 from src.models.infer import run_inference
 
-from src.config.settings import METADATA_FILE, PROCESSED_DIR, MODEL_DIR
+from src.config.settings import METADATA_FILE, PROCESSED_DIR, MODEL_DIR, EVAL_DIR, METADATA_DIR
 
 def metadata_exists():
     return os.path.exists(METADATA_FILE)
@@ -31,20 +31,23 @@ def model_exists():
     return False
 
 def clean_all():
-    print("🧹 Cleaning metadata, processed features, and models...")
+    print("Cleaning metadata, processed features, and models...")
 
-    if os.path.exists("data/metadata"):
-        shutil.rmtree("data/metadata")
+    folders = [
+        METADATA_DIR,
+        PROCESSED_DIR,
+        MODEL_DIR,
+        EVAL_DIR,
+    ]
 
-    if os.path.exists("data/processed"):
-        shutil.rmtree("data/processed")
+    for folder in folders:
+        if os.path.exists(folder):
+            shutil.rmtree(folder)
+        os.makedirs(folder, exist_ok=True)
 
-    if os.path.exists(MODEL_DIR):
-        shutil.rmtree(MODEL_DIR)
-
-    os.makedirs("data/metadata", exist_ok=True)
-    os.makedirs("data/processed", exist_ok=True)
-    os.makedirs(MODEL_DIR, exist_ok=True)
+        gitkeep_path = os.path.join(folder, ".gitkeep")
+        with open(gitkeep_path, "w") as f:
+            f.write("")
 
     print("Clean completed.")
 

@@ -19,6 +19,16 @@ st.sidebar.header("Navigation")
 
 mode = st.sidebar.radio("Choose Mode:", ["Train Model", "Inference"])
 
+feature_options = ["mfcc", "delta", "deltadelta", "spectral", "melspec"]
+
+selected_features = st.sidebar.multiselect(
+    "Select Feature Types:",
+    feature_options,
+    default=settings.FEATURE_TYPES
+)
+
+settings.FEATURE_TYPES = selected_features
+
 model_choice = st.sidebar.selectbox(
     "Model to Use:",
     ["svm", "logistic", "random_forest", "mlp"],
@@ -36,6 +46,11 @@ if mode == "Train Model":
     st.header("Train Model")
 
     st.write(f"Selected Model: **{model_choice}**")
+    st.write(f"Selected Features: {', '.join(settings.FEATURE_TYPES)}")
+
+    if len(settings.FEATURE_TYPES) == 0:
+        st.error("Please select at least one feature type in the sidebar.")
+        st.stop()
 
     if st.button("Start Training"):
         st.write("Preparing metadata & features...")
@@ -68,8 +83,13 @@ if mode == "Train Model":
 
 elif mode == "Inference":
     st.header("Run Inference")
+    st.write(f"Using Features: {', '.join(settings.FEATURE_TYPES)}")
 
     uploaded_file = st.file_uploader("Upload WAV file", type=["wav"])
+
+    if len(settings.FEATURE_TYPES) == 0:
+        st.error("Please select at least one feature type in the sidebar.")
+        st.stop()
 
     if uploaded_file is not None:
         temp_path = "temp_uploaded.wav"

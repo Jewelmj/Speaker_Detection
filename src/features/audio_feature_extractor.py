@@ -1,40 +1,58 @@
+import os
 import numpy as np
 import pandas as pd
-import os
+
+from src.config.settings import DATASET_METADATA_PATH, FEATURE_TYPES
 from src.features.mfcc import extract_mfcc
+from src.features.delta import extract_delta, extract_deltadelta
+from src.features.spectral import extract_spectral_features
+from src.features.mel_spectrogram import extract_melspec
 
-from src.config.settings import DATASET_METADATA_PATH, FEATURES_TO_USE
 
-def extract_audio_features(file_path: str):
+def extract_audio_features(file_path: str) -> np.ndarray:
     """
-    Extract features from a single audio file.
-    Currently supports MFCC only.
+    Extract a combined feature vector for a single audio file,
+    based on FEATURE_TYPES defined in config.settings.
+
+    FEATURE_TYPES can include:
+        "mfcc", "delta", "deltadelta", "spectral", "melspec"
     """
     feature_list = []
 
-    if "mfcc" in FEATURES_TO_USE:
+    if "mfcc" in FEATURE_TYPES:
         feature_list.append(extract_mfcc(file_path))
-    else:
-        raise ValueError(f"Unsupported feature type: {FEATURES_TO_USE}")
+
+    if "delta" in FEATURE_TYPES:
+        feature_list.append(extract_delta(file_path))
+
+    if "deltadelta" in FEATURE_TYPES:
+        feature_list.append(extract_deltadelta(file_path))
+
+    if "spectral" in FEATURE_TYPES:
+        feature_list.append(extract_spectral_features(file_path))
+
+    if "melspec" in FEATURE_TYPES:
+        feature_list.append(extract_melspec(file_path))
+
+    if not feature_list:
+        raise ValueError("FEATURE_TYPES is empty – no features selected in settings.py")
 
     return np.concatenate(feature_list)
 
 
 def batch_extract_features():
     """
-    Reads dataset_info.csv
-    Extracts MFCC for each file
-    Saves numpy arrays in data/processed/
+    Reads dataset_info.csv, extracts features for each file,
+    and saves numpy arrays in data/processed.
     """
-
     df = pd.read_csv(DATASET_METADATA_PATH)
 
     X_train, y_train = [], []
     X_test, y_test = [], []
 
-    print("Extracting MFCC features...")
+    print("Extracting features for all audio files...")
 
-    for i, row in df.iterrows():
+    for _, row in df.iterrows():
         fp = row["filepath"]
         label = row["label"]
         split = row["split"]
@@ -59,5 +77,4 @@ def batch_extract_features():
     np.save("data/processed/X_test.npy", np.array(X_test))
     np.save("data/processed/y_test.npy", np.array(y_test))
 
-    print("Feature extraction completed successfully!")
-    print("Saved files under: data/processed/")
+    print("Feature extraction completed. Saved to data/processed/")
