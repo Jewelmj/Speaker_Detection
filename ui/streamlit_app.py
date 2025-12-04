@@ -1,6 +1,8 @@
 import streamlit as st
 import os
 import sys
+import json
+import pandas as pd
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, ROOT_DIR)
@@ -17,7 +19,10 @@ st.title("Speaker Recognition Control Panel")
 
 st.sidebar.header("Navigation")
 
-mode = st.sidebar.radio("Choose Mode:", ["Train Model", "Inference"])
+mode = st.sidebar.radio(
+    "Choose Mode:",
+    ["Train Model", "Inference", "Model Comparison"]
+)
 
 feature_options = ["mfcc", "delta", "deltadelta", "spectral", "melspec"]
 
@@ -80,6 +85,50 @@ if mode == "Train Model":
             st.subheader("Classification Report")
             with open(report_path, "r") as f:
                 st.text(f.read())
+
+elif mode == "Model Comparison":
+    st.header("Multi-Model Comparison")
+
+    st.write("This will train **all models** using the selected features:")
+    st.write(f"**{', '.join(settings.FEATURE_TYPES)}**")
+
+    if st.button("Start Full Comparison"):
+        model_list = ["svm", "logistic", "random_forest"]
+        results = []
+
+        prepare_metadata()
+        batch_extract_features()
+
+        for m in model_list:
+            st.write(f"Training {m}...")
+            settings.MODEL_TO_USE = m
+            settings.INFERENCE_MODEL = m
+
+            train_selected_model(m)
+
+            json_path = os.path.join(settings.EVAL_DIR, f"{m}_results.json")
+            acc = None
+
+            if os.path.exists(json_path):
+                with open(json_path, "r") as jf:
+                    data = json.load(jf)
+                    acc = data.get("accuracy", None)
+
+            results.append({
+                "Model": m,
+                "Accuracy": data.get("accuracy"),
+                "Precision": data.get("precision"),
+                "Recall": data.get("recall"),
+                "F1 Score": data.get("f1"),
+                "ROC-AUC": data.get("roc_auc"),
+            })
+
+        st.success("Comparison completed!")
+
+        df = pd.DataFrame(results)
+        st.dataframe(df)
+
+        st.bar_chart(df.set_index("Model"))
 
 elif mode == "Inference":
     st.header("Run Inference")

@@ -13,7 +13,8 @@ from src.models.rf_model import get_rf_model
 from src.models.save_evaluation import (
     save_confusion_matrix,
     save_classification_report,
-    save_roc_curve
+    save_roc_curve,
+    save_evaluation_json
 )
 
 def load_data():
@@ -35,8 +36,8 @@ def get_model(model_name):
         raise ValueError(f"Unknown model: {model_name}")
 
 
-def train_selected_model():
-    print(f"Training model: {MODEL_TO_USE}")
+def train_selected_model(model_name=MODEL_TO_USE):
+    print(f"Training model: {model_name}")
 
     X_train, y_train, X_test, y_test = load_data()
 
@@ -44,7 +45,7 @@ def train_selected_model():
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    model = get_model(MODEL_TO_USE)
+    model = get_model(model_name)
 
     print("Training...")
     model.fit(X_train_scaled, y_train)
@@ -55,16 +56,17 @@ def train_selected_model():
     print("\nEvaluation on Test Set:")
     print(f"Accuracy: {acc:.4f}")
 
-    save_confusion_matrix(y_test, y_pred, MODEL_TO_USE)
-    save_classification_report(y_test, y_pred, MODEL_TO_USE)
-    save_roc_curve(model, X_test_scaled, y_test, MODEL_TO_USE)
+    save_confusion_matrix(y_test, y_pred, model_name)
+    save_classification_report(y_test, y_pred, model_name)
+    save_roc_curve(model, X_test_scaled, y_test, model_name)
+    save_evaluation_json(model, X_test_scaled, y_test, y_pred, model_name)
 
     print(f"\nEvaluation saved under: experiments/evaluation/")
 
     os.makedirs(MODEL_DIR, exist_ok=True)
 
-    joblib.dump(model, os.path.join(MODEL_DIR, f"{MODEL_TO_USE}_model.joblib"))
+    joblib.dump(model, os.path.join(MODEL_DIR, f"{model_name}_model.joblib"))
     joblib.dump(scaler, os.path.join(MODEL_DIR, "scaler.joblib"))
 
-    print(f"Saved {MODEL_TO_USE} model and scaler.")
+    print(f"Saved {model_name} model and scaler.")
     print(f"Training completed.")

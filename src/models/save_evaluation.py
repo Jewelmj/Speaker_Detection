@@ -1,8 +1,9 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import json
 from sklearn.metrics import (
-    confusion_matrix, classification_report, roc_curve, auc
+    confusion_matrix, classification_report, roc_curve, auc, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 )
 
 from src.config.settings import EVAL_DIR
@@ -53,3 +54,32 @@ def save_roc_curve(model, X_test_scaled, y_test, model_name):
 
     fig.savefig(os.path.join(EVAL_DIR, f"{model_name}_roc_curve.png"))
     plt.close(fig)
+
+def save_evaluation_json(model, X_test_scaled, y_test, y_pred, model_name):
+    """
+    Save evaluation metrics into a JSON file for UI model comparison.
+    """
+
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, zero_division=0)
+    recall = recall_score(y_test, y_pred, zero_division=0)
+    f1 = f1_score(y_test, y_pred, zero_division=0)
+
+    roc_auc = None
+    if hasattr(model, "predict_proba"):
+        probs = model.predict_proba(X_test_scaled)[:, 1]
+        roc_auc = roc_auc_score(y_test, probs)
+
+    results = {
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "roc_auc": roc_auc,
+    }
+
+    os.makedirs(EVAL_DIR, exist_ok=True)
+    json_path = os.path.join(EVAL_DIR, f"{model_name}_results.json")
+
+    with open(json_path, "w") as jf:
+        json.dump(results, jf, indent=4)

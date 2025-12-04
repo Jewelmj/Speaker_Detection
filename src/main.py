@@ -11,7 +11,6 @@ from src.models.trainer import train_selected_model
 from src.models.infer import run_inference
 
 from src.config.settings import METADATA_FILE, PROCESSED_DIR, MODEL_DIR, EVAL_DIR, METADATA_DIR
-
 def metadata_exists():
     return os.path.exists(METADATA_FILE)
 
