@@ -51,6 +51,10 @@ data/
 ```
 
 ## Usage
+All the usage can be done via ui:
+```bash
+streamlit run ui/streamlit_app.py
+```
 Train the selected model:
 ```bash
 python src/main.py train

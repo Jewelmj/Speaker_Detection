@@ -2,12 +2,15 @@ import os
 import sys
 import shutil
 
-from data.mertadata_prep import prepare_metadata
-from features.audio_feature_extractor import batch_extract_features
-from models.trainer import train_selected_model
-from models.infer import run_inference
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(ROOT_DIR)
 
-from config.settings import METADATA_FILE, PROCESSED_DIR, MODEL_DIR
+from src.data.mertadata_prep import prepare_metadata
+from src.features.audio_feature_extractor import batch_extract_features
+from src.models.trainer import train_selected_model
+from src.models.infer import run_inference
+
+from src.config.settings import METADATA_FILE, PROCESSED_DIR, MODEL_DIR
 
 def metadata_exists():
     return os.path.exists(METADATA_FILE)

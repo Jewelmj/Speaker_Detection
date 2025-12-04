@@ -5,12 +5,12 @@ import joblib
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-from config.settings import MODEL_TO_USE, PROCESSED_DIR, MODEL_DIR
+from src.config.settings import MODEL_TO_USE, PROCESSED_DIR, MODEL_DIR
 
-from models.svm_model import get_svm_model
-from models.logistic_model import get_logistic_model
-from models.rf_model import get_rf_model
-from models.save_evaluation import (
+from src.models.svm_model import get_svm_model
+from src.models.logistic_model import get_logistic_model
+from src.models.rf_model import get_rf_model
+from src.models.save_evaluation import (
     save_confusion_matrix,
     save_classification_report,
     save_roc_curve

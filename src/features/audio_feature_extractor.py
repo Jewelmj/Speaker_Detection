@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 import os
-from features.mfcc import extract_mfcc
+from src.features.mfcc import extract_mfcc
 
-from config.settings import DATASET_METADATA_PATH, FEATURES_TO_USE
+from src.config.settings import DATASET_METADATA_PATH, FEATURES_TO_USE
 
 def extract_audio_features(file_path: str):
     """

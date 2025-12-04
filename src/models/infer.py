@@ -4,10 +4,10 @@ import joblib
 import numpy as np
 import torch
 
-from config.settings import INFERENCE_MODEL, MODEL_DIR
-from features.audio_feature_extractor import extract_audio_features
+from src.config.settings import INFERENCE_MODEL, MODEL_DIR
+from src.features.audio_feature_extractor import extract_audio_features
 
-from models.mlp_model import MLPModel
+from src.models.mlp_model import MLPModel
 
 
 def load_scaler():

@@ -1,3 +1,6 @@
 pandas
 scikit-learn
 librosa
+torch
+matplotlib
+streamlit

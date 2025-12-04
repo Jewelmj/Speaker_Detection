@@ -5,7 +5,7 @@ from sklearn.metrics import (
     confusion_matrix, classification_report, roc_curve, auc
 )
 
-from config.settings import EVAL_DIR
+from src.config.settings import EVAL_DIR
 
 
 def save_confusion_matrix(y_true, y_pred, model_name):
