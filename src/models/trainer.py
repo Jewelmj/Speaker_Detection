@@ -10,7 +10,11 @@ from config.settings import MODEL_TO_USE, PROCESSED_DIR, MODEL_DIR
 from models.svm_model import get_svm_model
 from models.logistic_model import get_logistic_model
 from models.rf_model import get_rf_model
-
+from models.save_evaluation import (
+    save_confusion_matrix,
+    save_classification_report,
+    save_roc_curve
+)
 
 def load_data():
     X_train = np.load(os.path.join(PROCESSED_DIR, "X_train.npy"))
@@ -50,10 +54,12 @@ def train_selected_model():
 
     print("\nEvaluation on Test Set:")
     print(f"Accuracy: {acc:.4f}")
-    print("\nClassification Report:")
-    print(classification_report(y_test, y_pred))
-    print("\nConfusion Matrix:")
-    print(confusion_matrix(y_test, y_pred))
+
+    save_confusion_matrix(y_test, y_pred, MODEL_TO_USE)
+    save_classification_report(y_test, y_pred, MODEL_TO_USE)
+    save_roc_curve(model, X_test_scaled, y_test, MODEL_TO_USE)
+
+    print(f"\nEvaluation saved under: experiments/evaluation/")
 
     os.makedirs(MODEL_DIR, exist_ok=True)
 

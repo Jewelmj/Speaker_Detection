@@ -2,6 +2,7 @@
 METADATA_FILE = "data/metadata/dataset_info.csv"
 PROCESSED_DIR = "data/processed"
 MODEL_DIR = "experiments/models"
+EVAL_DIR = "experiments/evaluation"
 
 # data preperation settings
 DATASET_METADATA_PATH = "data/metadata/dataset_info.csv"

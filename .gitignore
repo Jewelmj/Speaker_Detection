@@ -5,6 +5,7 @@ data/processed/*
 
 experiments/models/*
 experiments/logs/*
+experiments/evaluation/*
 
 !data/.gitkeep
 !data/target/.gitkeep
@@ -15,6 +16,7 @@ experiments/logs/*
 !experiments/.gitkeep
 !experiments/models/.gitkeep
 !experiments/log/.gitkeep
+!experiments/evaluation/.gitkeep
 
 __pycache__/
 *.pyc
